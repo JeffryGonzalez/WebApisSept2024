@@ -10,6 +10,7 @@ public class Api(ILookupVendors vendorLookup) : ControllerBase
         {
             return BadRequest();
         }
+
         if (await vendorLookup.IsCurrentVendorAsync(vendor) == false)
         {
             return NotFound();
