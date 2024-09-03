@@ -1,6 +1,6 @@
 ﻿namespace Issues.Api.Catalog;
 
-public class Api : ControllerBase
+public class Api(ILookupVendors vendorLookup) : ControllerBase
 {
 
     [HttpPost("/catalog/{vendor}/software")]
@@ -10,7 +10,7 @@ public class Api : ControllerBase
         {
             return BadRequest();
         }
-        if (vendor != "microsoft")
+        if (await vendorLookup.IsCurrentVendorAsync(vendor) == false)
         {
             return NotFound();
         }
@@ -18,6 +18,10 @@ public class Api : ControllerBase
     }
 }
 
+public interface ILookupVendors
+{
+    Task<bool> IsCurrentVendorAsync(string vendor);
+}
 
 public record CreateSoftwareCatalogItemRequest
 {

@@ -2,7 +2,7 @@
 
 ###
 
-POST {{Api_HostAddress}}/catalog/oracle/software
+POST {{Api_HostAddress}}/catalog/microsoft/software
 Content-Type: application/json
 
 {

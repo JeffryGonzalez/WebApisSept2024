@@ -1,4 +1,6 @@
 using HtTemplate.Configuration;
+using Issues.Api.Catalog;
+using Issues.Api.Vendors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ builder.Services.AddCustomOasGeneration();
 
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<VendorData>();
+builder.Services.AddScoped<ILookupVendors, VendorData>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
