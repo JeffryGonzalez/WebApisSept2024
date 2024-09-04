@@ -29,4 +29,10 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
+    <ItemGroup>
+      <EditorConfigFiles Remove="C:\Users\ITUStudent\class\WebApis\src\IssuesTrackerSolution\Issues.Api\.editorconfig" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="C:\Users\ITUStudent\class\WebApis\src\IssuesTrackerSolution\Issues.Api\.editorconfig" />
+    </ItemGroup>
 </Project>

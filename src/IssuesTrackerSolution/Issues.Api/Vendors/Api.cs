@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Marten;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Issues.Api.Vendors;
@@ -9,8 +10,9 @@ public class Api(VendorData vendor) : ControllerBase
 {
 
     [HttpGet("/vendors")]
-    public async Task<ActionResult> GetVendorsAsync(CancellationToken token)
+    public async Task<ActionResult<Dictionary<string, VendorInformationResponse>>> GetVendorsAsync(CancellationToken token)
     {
+
 
         // var vendorLookup = new VendorData(); // the new keyword cannot be used on ANYTHING that is touching a backing service.
         var vendors = await vendor.GetVendorInformationAsync(token);
@@ -23,7 +25,7 @@ public class Api(VendorData vendor) : ControllerBase
         [FromBody] VendorCreateRequest request,
         [FromServices] IValidator<VendorCreateRequest> validator)
     {
-        // Todo: Validate this sucker.
+
         var validations = await validator.ValidateAsync(request);
 
 
@@ -31,12 +33,6 @@ public class Api(VendorData vendor) : ControllerBase
         {
             return BadRequest(validations.ToDictionary());
         }
-        // - Property Validation - is the incoming request in accordance with the business rules?
-        // - Domain Validation (Entity Validation) - 
-        // - might not be "pure functions"
-        // Todo: Make sure this is being posted by a SoftwareCenter Admin, if not, 401 or 403 (Tomorrow)
-        // Todo: If it looks good, create a VendorItemEntity, save that to the database
-
 
         VendorInformationResponse response = await vendor.AddVendorAsync(request);
 
@@ -64,4 +60,11 @@ public class VendorCreateRequestValidator : AbstractValidator<VendorCreateReques
         }).WithMessage("That Vendor Already Exists");
     }
 }
-public record VendorInformationResponse(string id, string Name);
+public record VendorInformationResponse // "Write Model" (stuff I'm sending to client)
+{
+
+    [Required]
+    public string Id { get; set; } = string.Empty;
+    [Required]
+    public string Name { get; set; } = string.Empty;
+};
