@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using Marten;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Issues.Api.Vendors;
-
+[Authorize] // don't accept any requests without a valid Authorization header
 public class Api(VendorData vendor) : ControllerBase
 {
 

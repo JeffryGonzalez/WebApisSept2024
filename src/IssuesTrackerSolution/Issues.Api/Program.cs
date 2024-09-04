@@ -34,8 +34,8 @@ if (app.Environment.IsDevelopment()) // Environment Variable ASPNETCORE_ENVIRONM
     app.UseSwaggerUI(); // this adds SwaggerUI - which is an HTML5/JavaScript app you get to at /swagger
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // AuthZ - If we know who you are, you still might not be able to do this thing.
+app.UseAuthorization(); // AuthN - verifying the identity of the person
 
 app.MapControllers(); // Uses reflection in .NET to find all the controllers, look at their attributes and create the route table.
 
