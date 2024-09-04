@@ -55,7 +55,7 @@ public class VendorCreateRequestValidator : AbstractValidator<VendorCreateReques
         RuleFor(v => v.Name).MustAsync(async (name, cancellation) =>
         {
             var slug = SlugGenerator.GenerateSlugFor(name);
-            var exists = await session.Query<VendorItemEntity>().AnyAsync(v => v.Slug == slug);
+            var exists = await session.Query<VendorItemEntity>().AnyAsync(v => v.Slug == slug, cancellation);
             return !exists;
         }).WithMessage("That Vendor Already Exists");
     }
