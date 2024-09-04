@@ -1,3 +1,4 @@
+using FluentValidation;
 using HtTemplate.Configuration;
 using Issues.Api.Catalog;
 using Issues.Api.Vendors;
@@ -20,8 +21,10 @@ var connectionString = builder.Configuration.GetConnectionString("issues") ?? th
 builder.Services.AddMarten(options =>
 {
     options.Connection(connectionString);
+    options.Schema.For<VendorItemEntity>().UniqueIndex(Marten.Schema.UniqueIndexType.Computed, v => v.Slug);
 }).UseLightweightSessions();
 
+builder.Services.AddValidatorsFromAssemblyContaining<VendorCreateRequestValidator>(); // you only need to do this once.
 var app = builder.Build(); // after this line, you can't add or change services any more.
 // everything after this line is about setting up the HTTP "Middleware" - the stuff that is going to process incoming requests/responses.
 // Configure the HTTP request pipeline.
@@ -35,9 +38,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers(); // Uses reflection in .NET to find all the controllers, look at their attributes and create the route table.
-<<<<<<< HEAD
 
-=======
-app.MapGet("/tacos", () => "Delicious");
->>>>>>> 520d4387746d197bb00995e2a51a6d5826f4a6d9
+
 app.Run(); // it starts running here.
