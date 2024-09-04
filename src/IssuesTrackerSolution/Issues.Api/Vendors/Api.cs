@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Marten;
 
 
 namespace Issues.Api.Vendors;
@@ -47,9 +48,15 @@ public record VendorCreateRequest
 
 public class VendorCreateRequestValidator : AbstractValidator<VendorCreateRequest>
 {
-    public VendorCreateRequestValidator()
+    public VendorCreateRequestValidator(IDocumentSession session)
     {
         RuleFor(v => v.Name).NotEmpty().MinimumLength(3).MaximumLength(100);
+        RuleFor(v => v.Name).MustAsync(async (name, cancellation) =>
+        {
+            var slug = SlugGenerator.GenerateSlugFor(name);
+            var exists = await session.Query<VendorItemEntity>().AnyAsync(v => v.Slug == slug);
+            return !exists;
+        }).WithMessage("That Vendor Already Exists");
     }
 }
 public record VendorInformationResponse(string id, string Name);
