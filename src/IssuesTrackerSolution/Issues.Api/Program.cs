@@ -35,5 +35,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers(); // Uses reflection in .NET to find all the controllers, look at their attributes and create the route table.
+<<<<<<< HEAD
 
+=======
+app.MapGet("/tacos", () => "Delicious");
+>>>>>>> 520d4387746d197bb00995e2a51a6d5826f4a6d9
 app.Run(); // it starts running here.
