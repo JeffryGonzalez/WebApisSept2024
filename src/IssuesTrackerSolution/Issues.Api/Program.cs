@@ -25,6 +25,14 @@ builder.Services.AddMarten(options =>
 }).UseLightweightSessions();
 
 builder.Services.AddValidatorsFromAssemblyContaining<VendorCreateRequestValidator>(); // you only need to do this once.
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("IsSoftwareCenterAdmin", policy =>
+    {
+        policy.RequireRole("SoftwareCenter");
+        policy.RequireRole("SoftwareCenterAdmin");
+    });
+
 var app = builder.Build(); // after this line, you can't add or change services any more.
 // everything after this line is about setting up the HTTP "Middleware" - the stuff that is going to process incoming requests/responses.
 // Configure the HTTP request pipeline.

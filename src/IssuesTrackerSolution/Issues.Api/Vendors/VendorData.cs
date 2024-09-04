@@ -1,9 +1,11 @@
 ﻿using Issues.Api.Catalog;
+using JasperFx.Core;
 using Marten;
+using System.Security.Claims;
 
 namespace Issues.Api.Vendors;
 
-public class VendorData(TimeProvider timeProvider, IDocumentSession session) : ILookupVendors
+public class VendorData(TimeProvider timeProvider, IDocumentSession session, IHttpContextAccessor contextAccessor) : ILookupVendors
 {
 
     public async Task<Dictionary<string, VendorInformationResponse>> GetVendorInformationAsync(CancellationToken token)
@@ -26,12 +28,13 @@ public class VendorData(TimeProvider timeProvider, IDocumentSession session) : I
         // don't allow duplicates -
         // TODO tomorrow: Prevent multiples. generate the slug, see if we already have it, and if we do, throw an Exception
         // Make this an "idempotent" operation.
+        var sub = contextAccessor?.HttpContext?.User.Claims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value ?? throw new Exception("Can only be used in authenticated sessions");
         var entity = new VendorItemEntity
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
             Added = timeProvider.GetUtcNow(),
-            AddedBy = "sub of person additing it", // Tomorrow
+            AddedBy = sub,
             Slug = SlugGenerator.GenerateSlugFor(request.Name),
         };
         // Save it to the database.

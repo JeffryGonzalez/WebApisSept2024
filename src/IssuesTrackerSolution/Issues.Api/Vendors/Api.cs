@@ -17,11 +17,15 @@ public class Api(VendorData vendor) : ControllerBase
         return Ok(vendors);
     }
 
-    [HttpPost("/vendors")]
-    public async Task<ActionResult> AddVendorAsync([FromBody] VendorCreateRequest request, [FromServices] IValidator<VendorCreateRequest> validator)
+    [HttpPost("/vendors")] // nobody should be able to do this unless they meet the security policy
+    [Authorize(Policy = "IsSoftwareCenterAdmin")]
+    public async Task<ActionResult> AddVendorAsync(
+        [FromBody] VendorCreateRequest request,
+        [FromServices] IValidator<VendorCreateRequest> validator)
     {
         // Todo: Validate this sucker.
         var validations = await validator.ValidateAsync(request);
+
 
         if (!validations.IsValid)
         {
