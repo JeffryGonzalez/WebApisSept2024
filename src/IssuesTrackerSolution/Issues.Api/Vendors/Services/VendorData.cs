@@ -1,9 +1,12 @@
 ﻿using Issues.Api.Catalog;
+using Issues.Api.Vendors.Entities;
+using Issues.Api.Vendors.Models;
+using Issues.Api.Vendors.Utils;
 using JasperFx.Core;
 using Marten;
 using System.Security.Claims;
 
-namespace Issues.Api.Vendors;
+namespace Issues.Api.Vendors.Services;
 
 public class VendorData(TimeProvider timeProvider, IDocumentSession session, IHttpContextAccessor contextAccessor) : ILookupVendors
 {
@@ -35,7 +38,7 @@ public class VendorData(TimeProvider timeProvider, IDocumentSession session, IHt
             Name = request.Name,
             Added = timeProvider.GetUtcNow(),
             AddedBy = sub,
-            Slug = SlugGenerator.GenerateSlugFor(request.Name),
+            Slug = request.Name.GenerateSlug()
         };
         // Save it to the database.
         session.Store(entity);

@@ -1,4 +1,4 @@
-﻿namespace Issues.Api.Vendors;
+﻿namespace Issues.Api.Vendors.Entities;
 
 public class VendorItemEntity
 {

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Issues.Api.Vendors;
+using Issues.Api.Vendors.Utils;
 using Marten;
 using Riok.Mapperly.Abstractions;
 using System.ComponentModel.DataAnnotations;
@@ -78,7 +78,7 @@ public class CreateSoftwareCatalogItemRequestValidator : AbstractValidator<Creat
         RuleFor(c => c.Description).NotEmpty().MinimumLength(10).MaximumLength(1024);
         RuleFor(v => v.Name).MustAsync(async (name, cancellation) =>
         {
-            var slug = SlugGenerator.GenerateSlugFor(name);
+            var slug = name.GenerateSlug();
             var exists = await session.Query<CatalogItemEntity>().AnyAsync(v => v.Slug == slug, cancellation);
             return !exists;
         }).WithMessage("That Software Item Already Exists");
@@ -96,7 +96,7 @@ public static class CatalogMappingExtensions
             Description = request.Description,
             AddedBy = "sub of the person that added this",
             DateAdded = createdTime,
-            Slug = SlugGenerator.GenerateSlugFor(request.Name),
+            Slug = request.Name.GenerateSlug(),
             Vendor = vendor,
         };
     }

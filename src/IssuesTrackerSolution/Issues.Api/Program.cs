@@ -1,8 +1,10 @@
 using FluentValidation;
 using HtTemplate.Configuration;
 using Issues.Api.Catalog;
-using Issues.Api.Vendors;
+using Issues.Api.Vendors.Entities;
+using Issues.Api.Vendors.Services;
 using Marten;
+using static Issues.Api.Vendors.Models.VendorCreateRequest;
 
 var builder = WebApplication.CreateBuilder(args); // the built in reasonable defaults, according to the ASP.NET MVC Core team.
 
