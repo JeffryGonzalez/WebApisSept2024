@@ -11,6 +11,11 @@ namespace Issues.Api.Vendors.Services;
 public class VendorData(TimeProvider timeProvider, IDocumentSession session, IHttpContextAccessor contextAccessor) : ILookupVendors
 {
 
+    /// <summary>
+    /// Use this to get information about a vendor.
+    /// </summary>
+    /// <param name="token">Pass the token around.</param>
+    /// <returns>A dictionary of the results, blah blah</returns>
     public async Task<Dictionary<string, VendorInformationResponse>> GetVendorInformationAsync(CancellationToken token)
     {
 

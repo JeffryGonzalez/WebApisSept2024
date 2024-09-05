@@ -2,15 +2,28 @@
 using Issues.Api.Vendors.Utils;
 using Marten;
 using Riok.Mapperly.Abstractions;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace Issues.Api.Catalog;
 
+[Produces("application/json")]
+[ApiExplorerSettings(GroupName = "Software")]
 public class Api(ILookupVendors vendorLookup, TimeProvider timeProvider, IDocumentSession session) : ControllerBase
 {
     // Todo: Only members of SoftwareCenter role should be able to do this.
+    /// <summary>
+    /// Use this to add a piece of software to the vendor
+    /// </summary>
+    /// <param name="vendor">the id of the vendor</param>
+    /// <returns></returns>
     [HttpPost("/vendors/{vendor}/software")]
     [ResponseCache(Duration = 15, Location = ResponseCacheLocation.Client)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(Tags = ["Software"])]
+
     public async Task<ActionResult<SoftwareCatalogItemResponse>> AddSoftwareToCatalogAsync(
         [FromBody] CreateSoftwareCatalogItemRequest request,
         [FromRoute] string vendor,
@@ -46,6 +59,7 @@ public class Api(ILookupVendors vendorLookup, TimeProvider timeProvider, IDocume
     // Document
     [HttpGet("/vendors/{vendor}/software/{software}", Name = "catalog#getsoftwarebyid")]
     [ResponseCache(Duration = 15, Location = ResponseCacheLocation.Client)]
+    [SwaggerOperation(Tags = ["Software"])]
     public async Task<ActionResult<SoftwareCatalogItemResponse>> GetSoftwareById(string software, string vendor, CancellationToken token)
     {
         var item = await session.Query<CatalogItemEntity>().SingleOrDefaultAsync(item => item.Slug == software, token);

@@ -15,6 +15,7 @@ public record VendorCreateRequest
     {
         public VendorCreateRequestValidator(IDocumentSession session)
         {
+
             RuleFor(v => v.Name).NotEmpty().MinimumLength(3).MaximumLength(100);
             RuleFor(v => v.Name).MustAsync(async (name, cancellation) =>
             {

@@ -1,3 +1,4 @@
+@Issues.Api_HostAddress = http://localhost:1337
 @Api_HostAddress = http://localhost:1337
 
 @BobToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJvYkBjb21wYW55LmNvbSIsInN1YiI6ImJvYkBjb21wYW55LmNvbSIsImp0aSI6IjM5NTNiZGU0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDoxMzM3IiwibmJmIjoxNzI1NDcyODU4LCJleHAiOjE3MzMzMzUyNTgsImlhdCI6MTcyNTQ3Mjg1OSwiaXNzIjoiZG90bmV0LXVzZXItand0cyJ9.6MESOv93o1Gm6fR7BdJ4833YFVbYT2PhhtKmTYsCzpI
@@ -54,4 +55,18 @@ Authorization: {{SueToken}}
 
 {
   "name": "Oracle"
+}
+
+###
+
+GET {{Api_HostAddress}}/hr/software-catalog
+
+
+### 
+
+POST {{Api_HostAddress}}/vendors/microsoft/software/word/issues
+Content-Type: application/json
+
+{
+  "description": "spelchek doedn't werk"
 }

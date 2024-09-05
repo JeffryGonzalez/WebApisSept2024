@@ -1,12 +1,18 @@
-﻿using Issues.Api.Catalog;
+﻿using HtTemplate.Configuration;
+using Issues.Api.Catalog;
 using Marten;
+using Microsoft.FeatureManagement.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Issues.Api.Hr;
 
+//[ApiExplorerSettings(GroupName = "Hr")] // hide from the documentation - but it is still there.
+[FeatureGate(ApiFeatureManagementOptions.HrCatalogFeature)]
 public class Catalog(IDocumentSession session) : ControllerBase
 {
 
     [HttpGet("/hr/software-catalog")]
+    [SwaggerOperation(Tags = ["Human Relations"])]
     public async Task<ActionResult> GetFullSoftwareCatalogAsync(CancellationToken cancellationToken)
     {
         var response = await session.Query<CatalogItemEntity>()
