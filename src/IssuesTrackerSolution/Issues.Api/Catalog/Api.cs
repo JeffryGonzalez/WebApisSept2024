@@ -10,6 +10,7 @@ public class Api(ILookupVendors vendorLookup, TimeProvider timeProvider, IDocume
 {
     // Todo: Only members of SoftwareCenter role should be able to do this.
     [HttpPost("/vendors/{vendor}/software")]
+    [ResponseCache(Duration = 15, Location = ResponseCacheLocation.Client)]
     public async Task<ActionResult<SoftwareCatalogItemResponse>> AddSoftwareToCatalogAsync(
         [FromBody] CreateSoftwareCatalogItemRequest request,
         [FromRoute] string vendor,
@@ -40,8 +41,30 @@ public class Api(ILookupVendors vendorLookup, TimeProvider timeProvider, IDocume
 
         var response = entity.MapToResponse();
         // we need to return something back again, but not the entity or the request.
-        return Ok(response);
+        return CreatedAtRoute("catalog#getsoftwarebyid", new { vendor, software = response.Id }, response);
     }
+    // Document
+    [HttpGet("/vendors/{vendor}/software/{software}", Name = "catalog#getsoftwarebyid")]
+    [ResponseCache(Duration = 15, Location = ResponseCacheLocation.Client)]
+    public async Task<ActionResult<SoftwareCatalogItemResponse>> GetSoftwareById(string software, string vendor, CancellationToken token)
+    {
+        var item = await session.Query<CatalogItemEntity>().SingleOrDefaultAsync(item => item.Slug == software, token);
+        if (await vendorLookup.IsCurrentVendorAsync(vendor) == false)
+        {
+            return NotFound("Vendor does not exist");
+        }
+        if (item is null)
+        {
+            return NotFound("Vendor does not have that software");
+        }
+        else
+        {
+            return Ok(item.MapToResponse());
+        }
+    }
+
+    // TODO add a GET /vendors/{vendor}/software -> return all the software for a vendor.
+    // As long as that is a good vendor, this should never return a 404.
 }
 
 public interface ILookupVendors
